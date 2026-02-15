@@ -1,15 +1,16 @@
 ---
 const { bean, pagePath } = Astro.props;
+const actionPath = `/thanks?bean=${bean.id}`;
 ---
 
 <section id="order-section" class="sticker-card mt-8">
   <h3 class="text-2xl font-bold text-roast">주문하기</h3>
-  <p class="mt-2 text-sm text-ink/85">이름을 적고 주문하면, 접수 후 계속 페이지를 읽을 수 있어요.</p>
+  <p class="mt-2 text-sm text-ink/85">이름만 남기면 접수 끝. 기다리면서 원두 이야기도 읽어보세요.</p>
 
   <form
     name="orders"
     method="POST"
-    action="/thanks"
+    action={actionPath}
     data-netlify="true"
     data-order-form
     class="mt-4 space-y-4"
@@ -29,7 +30,7 @@ const { bean, pagePath } = Astro.props;
         name="customer_name"
         maxlength="24"
         required
-        placeholder="예: 민지"
+        placeholder="호칭이나 이름"
       />
     </div>
 
@@ -38,13 +39,13 @@ const { bean, pagePath } = Astro.props;
       class="touch-target w-full rounded-xl bg-roast px-4 py-3 text-base font-bold text-paper"
       data-submit-button
     >
-      주문하기
+      이 원두로 한 잔
     </button>
   </form>
 </section>
 
 <div class="toast" role="status" aria-live="polite" data-order-toast>
-  주문 접수됨 ✅
+  접수 완료! 조금만 기다려 주세요 ☕
 </div>
 
 <script>
@@ -53,9 +54,6 @@ const { bean, pagePath } = Astro.props;
   const showToast = (toast) => {
     if (!toast) return;
     toast.dataset.visible = "true";
-    window.setTimeout(() => {
-      toast.dataset.visible = "false";
-    }, 2200);
   };
 
   document.querySelectorAll("form[data-order-form]").forEach((form) => {
@@ -95,14 +93,18 @@ const { bean, pagePath } = Astro.props;
           throw new Error("request_failed");
         }
 
-        form.reset();
         showToast(toast);
+
+        window.setTimeout(() => {
+          const redirectTo = form.getAttribute("action") || "/thanks";
+          window.location.assign(redirectTo);
+        }, 600);
       } catch {
         form.submit();
       } finally {
         if (submitButton) {
           submitButton.disabled = false;
-          submitButton.textContent = "주문하기";
+          submitButton.textContent = "이 원두로 한 잔";
         }
       }
     });

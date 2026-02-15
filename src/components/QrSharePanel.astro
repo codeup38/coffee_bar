@@ -1,12 +1,10 @@
 ---
-const { title = "가족에게 QR로 공유", targetPath = "/" } = Astro.props;
+const { title = "QR 코드", targetPath = "/" } = Astro.props;
 ---
 
 <section class="sticker-card" data-qr-panel data-target-path={targetPath}>
   <h2 class="text-2xl font-bold text-roast">{title}</h2>
-  <p class="mt-2 text-sm text-ink/85">
-    이 화면을 열어두고 QR을 스캔하면 바로 메뉴 페이지로 이동할 수 있어요.
-  </p>
+  <p class="mt-2 text-sm text-ink/85">화면에 보이는 QR을 스캔해 주세요.</p>
 
   <div class="mt-5 flex justify-center">
     <canvas
@@ -42,7 +40,7 @@ const { title = "가족에게 QR로 공유", targetPath = "/" } = Astro.props;
 
   <noscript>
     <p class="mt-4 rounded-xl bg-paper px-3 py-2 text-xs text-ink/75">
-      JavaScript가 꺼져 있어 QR 이미지는 표시되지 않습니다. 메인 주소(`/`)를 직접 공유해 주세요.
+      JavaScript가 꺼져 있어 QR이 표시되지 않습니다. 메인 주소를 직접 공유해 주세요.
     </p>
   </noscript>
 </section>
@@ -83,7 +81,7 @@ const { title = "가족에게 QR로 공유", targetPath = "/" } = Astro.props;
       copyButton.addEventListener("click", async () => {
         if (!navigator.clipboard) {
           if (feedback) {
-            feedback.textContent = "클립보드 복사를 지원하지 않는 환경입니다.";
+            feedback.textContent = "이 환경에서는 클립보드 복사가 지원되지 않습니다.";
           }
           return;
         }
@@ -108,8 +106,8 @@ const { title = "가족에게 QR로 공유", targetPath = "/" } = Astro.props;
         shareButton.addEventListener("click", async () => {
           try {
             await navigator.share({
-              title: "Family Coffee Bar",
-              text: "우리 집 커피바 메뉴 보러 오세요.",
+              title: "coffee bar",
+              text: "명절 팝업 커피바 메뉴입니다. 원두 골라서 주문해 보세요!",
               url: shareUrl
             });
           } catch {
