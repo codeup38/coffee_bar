@@ -1,0 +1,98 @@
+---
+import "../styles/global.css";
+import FormStub from "./FormStub.astro";
+
+const {
+  title = "Family Coffee Bar",
+  description = "명절 거실 팝업 커피바"
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&family=Noto+Serif+KR:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script is:inline>
+      (() => {
+        try {
+          const mode = localStorage.getItem("coffee_bar_font_scale");
+          if (mode === "large") {
+            document.documentElement.classList.add("large-text");
+          }
+        } catch {
+          // ignore
+        }
+      })();
+    </script>
+  </head>
+  <body class="min-h-screen text-ink antialiased">
+    <div class="mx-auto max-w-5xl px-4 pb-16 pt-5 sm:px-6">
+      <header class="mb-5 rounded-2xl border border-roast/20 bg-white/80 p-4 backdrop-blur">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <a href="/" class="text-lg font-display font-bold text-roast">Family Coffee Bar</a>
+          <button
+            type="button"
+            class="touch-target rounded-full border border-roast/30 bg-paper px-4 text-sm font-bold text-roast"
+            data-font-toggle
+            aria-pressed="false"
+          >
+            Aa 큰 글씨
+          </button>
+        </div>
+        <nav class="mt-3 flex flex-wrap gap-2 text-sm font-bold text-roast/85">
+          <a class="touch-target rounded-full border border-roast/20 bg-paper px-3 py-2" href="/">홈</a>
+          <a class="touch-target rounded-full border border-roast/20 bg-paper px-3 py-2" href="/beans">원두</a>
+          <a class="touch-target rounded-full border border-roast/20 bg-paper px-3 py-2" href="/story">스토리</a>
+          <a class="touch-target rounded-full border border-roast/20 bg-paper px-3 py-2" href="/share">QR 공유</a>
+        </nav>
+      </header>
+
+      <main id="main-content">
+        <slot />
+      </main>
+
+      <footer class="mt-10 text-center text-xs text-ink/70">
+        <p>집 거실에서 운영하는 명절 팝업 커피바</p>
+      </footer>
+    </div>
+
+    <FormStub />
+
+    <script>
+      const storageKey = "coffee_bar_font_scale";
+
+      const applyFontMode = (isLarge) => {
+        document.documentElement.classList.toggle("large-text", isLarge);
+        const toggle = document.querySelector("[data-font-toggle]");
+        if (!toggle) return;
+        toggle.setAttribute("aria-pressed", String(isLarge));
+        toggle.textContent = isLarge ? "Aa 기본 글씨" : "Aa 큰 글씨";
+      };
+
+      const toggleButton = document.querySelector("[data-font-toggle]");
+      if (toggleButton) {
+        const initialLarge = document.documentElement.classList.contains("large-text");
+        applyFontMode(initialLarge);
+
+        toggleButton.addEventListener("click", () => {
+          const nextMode = !document.documentElement.classList.contains("large-text");
+          applyFontMode(nextMode);
+          try {
+            localStorage.setItem(storageKey, nextMode ? "large" : "normal");
+          } catch {
+            // ignore
+          }
+        });
+      }
+    </script>
+  </body>
+</html>

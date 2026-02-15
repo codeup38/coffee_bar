@@ -1,0 +1,26 @@
+---
+import Layout from "../components/Layout.astro";
+---
+
+<Layout title="주문 완료 | Family Coffee Bar" description="주문이 접수되었습니다.">
+  <section class="sticker-card text-center">
+    <p class="sticker-chip inline-flex">Order Received</p>
+    <h1 class="mt-3 text-3xl font-bold text-roast">주문이 접수되었습니다</h1>
+    <p class="mt-3 text-sm text-ink/85">곧 한 잔씩 내려서 전달해 드릴게요. 원두 페이지로 돌아가 다른 설명도 읽어보세요.</p>
+
+    <div class="mt-6 grid gap-2 sm:grid-cols-2">
+      <a
+        href="/beans"
+        class="touch-target inline-flex items-center justify-center rounded-xl bg-roast px-4 py-2.5 text-sm font-bold text-paper"
+      >
+        원두 다시 보기
+      </a>
+      <a
+        href="/"
+        class="touch-target inline-flex items-center justify-center rounded-xl border border-roast/30 bg-paper px-4 py-2.5 text-sm font-bold text-roast"
+      >
+        홈으로 이동
+      </a>
+    </div>
+  </section>
+</Layout>

@@ -1,0 +1,52 @@
+---
+import BeanCard from "../components/BeanCard.astro";
+import Layout from "../components/Layout.astro";
+import beans from "../data/beans.json";
+import site from "../data/site.json";
+---
+
+<Layout title={`${site.title} | 홈`} description={site.subtitle}>
+  <section class="sticker-card overflow-hidden">
+    <div class="rounded-2xl bg-gradient-to-r from-roast to-olive p-6 text-paper">
+      <p class="text-xs font-bold uppercase tracking-[0.2em]">Holiday Pop-up Coffee Bar</p>
+      <h1 class="mt-2 text-3xl font-bold sm:text-4xl">{site.subtitle}</h1>
+      <p class="mt-3 text-sm text-paper/90">한 잔씩 천천히 내립니다. 취향에 맞는 원두를 고르고 바로 주문해 주세요.</p>
+      <div class="mt-5 grid gap-2 sm:grid-cols-2">
+        <a
+          href="/beans"
+          class="touch-target inline-flex items-center justify-center rounded-xl bg-paper px-4 py-3 text-sm font-bold text-roast"
+        >
+          원두 전체 보기
+        </a>
+        <a
+          href="/share"
+          class="touch-target inline-flex items-center justify-center rounded-xl border border-paper/60 px-4 py-3 text-sm font-bold text-paper"
+        >
+          QR로 공유하기
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="mt-7">
+    <div class="mb-3 flex items-end justify-between">
+      <h2 class="text-2xl font-bold text-roast">오늘 내릴 원두</h2>
+      <a href="/beans" class="text-sm font-bold text-roast underline decoration-roast/40 underline-offset-4">전체 목록</a>
+    </div>
+    <div class="grid gap-4 md:grid-cols-2">
+      {beans.map((bean) => <BeanCard bean={bean} />)}
+    </div>
+  </section>
+
+  <section class="sticker-card mt-8">
+    <p class="sticker-chip inline-flex">왜 이 사이트를 만들었을까</p>
+    <h2 class="mt-3 text-2xl font-bold text-roast">커피 이야기를, 기다리는 시간으로</h2>
+    <p class="mt-3 text-sm text-ink/90">{site.story_short}</p>
+    <a
+      href="/story"
+      class="touch-target mt-4 inline-flex items-center justify-center rounded-xl border border-roast/25 bg-paper px-4 py-2.5 text-sm font-bold text-roast"
+    >
+      더 읽기
+    </a>
+  </section>
+</Layout>

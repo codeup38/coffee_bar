@@ -1,0 +1,110 @@
+---
+const { bean, pagePath } = Astro.props;
+---
+
+<section id="order-section" class="sticker-card mt-8">
+  <h3 class="text-2xl font-bold text-roast">주문하기</h3>
+  <p class="mt-2 text-sm text-ink/85">이름을 적고 주문하면, 접수 후 계속 페이지를 읽을 수 있어요.</p>
+
+  <form
+    name="orders"
+    method="POST"
+    action="/thanks"
+    data-netlify="true"
+    data-order-form
+    class="mt-4 space-y-4"
+  >
+    <input type="hidden" name="form-name" value="orders" />
+    <input type="hidden" name="bean_id" value={bean.id} />
+    <input type="hidden" name="bean_name" value={bean.name} />
+    <input type="hidden" name="page_path" value={pagePath} />
+    <input type="hidden" name="created_at_client" value="" />
+
+    <div>
+      <label for={`customer-name-${bean.id}`} class="mb-1 block text-sm font-bold text-roast">이름</label>
+      <input
+        id={`customer-name-${bean.id}`}
+        class="touch-target w-full rounded-xl border border-roast/20 bg-white px-4 py-2.5"
+        type="text"
+        name="customer_name"
+        maxlength="24"
+        required
+        placeholder="예: 민지"
+      />
+    </div>
+
+    <button
+      type="submit"
+      class="touch-target w-full rounded-xl bg-roast px-4 py-3 text-base font-bold text-paper"
+      data-submit-button
+    >
+      주문하기
+    </button>
+  </form>
+</section>
+
+<div class="toast" role="status" aria-live="polite" data-order-toast>
+  주문 접수됨 ✅
+</div>
+
+<script>
+  const encode = (formData) => new URLSearchParams(formData).toString();
+
+  const showToast = (toast) => {
+    if (!toast) return;
+    toast.dataset.visible = "true";
+    window.setTimeout(() => {
+      toast.dataset.visible = "false";
+    }, 2200);
+  };
+
+  document.querySelectorAll("form[data-order-form]").forEach((form) => {
+    if (form.dataset.enhanced === "true") return;
+    form.dataset.enhanced = "true";
+
+    const toast = form.closest("section")?.nextElementSibling;
+    const submitButton = form.querySelector("[data-submit-button]");
+
+    form.addEventListener("submit", async (event) => {
+      if (!window.fetch || !window.URLSearchParams || !window.FormData) {
+        return;
+      }
+
+      event.preventDefault();
+
+      const createdAtInput = form.querySelector('input[name="created_at_client"]');
+      if (createdAtInput) {
+        createdAtInput.value = new Date().toISOString();
+      }
+
+      if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.textContent = "접수 중...";
+      }
+
+      try {
+        const response = await fetch("/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: encode(new FormData(form))
+        });
+
+        if (!response.ok) {
+          throw new Error("request_failed");
+        }
+
+        form.reset();
+        showToast(toast);
+      } catch {
+        form.submit();
+      } finally {
+        if (submitButton) {
+          submitButton.disabled = false;
+          submitButton.textContent = "주문하기";
+        }
+      }
+    });
+  });
+</script>

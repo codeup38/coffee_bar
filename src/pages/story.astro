@@ -1,0 +1,32 @@
+---
+import Layout from "../components/Layout.astro";
+import site from "../data/site.json";
+
+const paragraphs = site.story_long.split("\n\n");
+---
+
+<Layout title="스토리 | Family Coffee Bar" description="왜 이 커피바를 열었는지">
+  <section class="sticker-card">
+    <p class="sticker-chip inline-flex">Coffee Story</p>
+    <h1 class="mt-3 text-3xl font-bold text-roast">왜 거실에서 커피를 내릴까</h1>
+
+    <div class="mt-4 space-y-4 text-sm text-ink/90">
+      {paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+    </div>
+
+    <div class="mt-6 grid gap-2 sm:grid-cols-2">
+      <a
+        href="/beans"
+        class="touch-target inline-flex items-center justify-center rounded-xl bg-roast px-4 py-2.5 text-sm font-bold text-paper"
+      >
+        원두 고르러 가기
+      </a>
+      <a
+        href="/share"
+        class="touch-target inline-flex items-center justify-center rounded-xl border border-roast/30 bg-paper px-4 py-2.5 text-sm font-bold text-roast"
+      >
+        QR 공유 화면 열기
+      </a>
+    </div>
+  </section>
+</Layout>
