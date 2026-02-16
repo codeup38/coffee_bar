@@ -35,24 +35,13 @@ const beanIds = beans.map((bean) => bean.id);
       <p class="font-semibold text-roast/80">{site.story.signature}</p>
     </div>
 
-    <div class="mt-6 rounded-xl bg-paper px-4 py-3">
-      <p class="text-sm font-bold text-roast">커피가 나왔다면</p>
-      <p class="mt-1 text-xs text-ink/70">주문한 원두의 맛 포인트와 배경을 읽으면서 마셔 보세요.</p>
-    </div>
-
-    <div class="mt-4 grid gap-2 sm:grid-cols-2">
+    <div class="mt-6 text-center">
       <a
         id="ordered-bean-link"
         href="/beans"
-        class="touch-target inline-flex items-center justify-center rounded-xl bg-roast px-4 py-2.5 text-sm font-bold text-paper"
+        class="text-sm font-bold text-roast underline decoration-roast/40 underline-offset-4"
       >
-        내 원두 이야기 읽기
-      </a>
-      <a
-        href="/beans"
-        class="touch-target inline-flex items-center justify-center rounded-xl border border-roast/30 bg-paper px-4 py-2.5 text-sm font-bold text-roast"
-      >
-        다른 원두 구경하기
+        원두 구경하기
       </a>
     </div>
   </section>
@@ -69,6 +58,7 @@ const beanIds = beans.map((bean) => bean.id);
       const orderedBeanLink = document.getElementById("ordered-bean-link");
       if (orderedBeanLink) {
         orderedBeanLink.setAttribute("href", `/beans/${beanId}?reading=1`);
+        orderedBeanLink.textContent = "주문한 원두 알아보기";
       }
     }
   </script>
