@@ -105,6 +105,18 @@ summary.touch-target {
   transform: translate(-50%, 0);
 }
 
+.temp-button {
+  @apply rounded-xl border border-roast/25 bg-white px-3 py-2 text-sm font-bold text-roast;
+}
+
+.temp-button.is-selected {
+  @apply border-roast bg-roast text-paper;
+}
+
+.temp-button.is-locked {
+  @apply border-roast/30 bg-paper text-roast/75;
+}
+
 /* Bean detail page: pre/post-order toggle */
 .bean-post-order { display: none; }
 .bean-ordered .bean-pre-order { display: none; }

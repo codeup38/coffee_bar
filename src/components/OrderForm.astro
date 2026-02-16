@@ -1,6 +1,8 @@
 ---
 const { bean, pagePath } = Astro.props;
 const actionPath = `/thanks?bean=${bean.id}`;
+const tempMode = bean.temp_mode ?? "hot_only";
+const canChooseTemp = tempMode === "hot_ice";
 ---
 
 <section id="order-section" class="sticker-card mt-8">
@@ -13,6 +15,7 @@ const actionPath = `/thanks?bean=${bean.id}`;
     action={actionPath}
     data-netlify="true"
     data-order-form
+    data-temp-mode={tempMode}
     class="mt-4 space-y-4"
   >
     <input type="hidden" name="form-name" value="orders" />
@@ -20,6 +23,37 @@ const actionPath = `/thanks?bean=${bean.id}`;
     <input type="hidden" name="bean_name" value={bean.name} />
     <input type="hidden" name="page_path" value={pagePath} />
     <input type="hidden" name="created_at_client" value="" />
+    <input type="hidden" name="serve_temp" value="hot" data-serve-temp-input />
+
+    <div>
+      <p class="mb-2 block text-sm font-bold text-roast">온도</p>
+      {
+        canChooseTemp ? (
+          <div class="grid grid-cols-2 gap-2" role="group" aria-label="온도 선택">
+            <button
+              type="button"
+              class="touch-target temp-button is-selected"
+              data-temp-option
+              data-temp-value="hot"
+              aria-pressed="true"
+            >
+              HOT
+            </button>
+            <button
+              type="button"
+              class="touch-target temp-button"
+              data-temp-option
+              data-temp-value="ice"
+              aria-pressed="false"
+            >
+              ICE
+            </button>
+          </div>
+        ) : (
+          <div class="touch-target temp-button is-locked" aria-label="HOT ONLY">HOT ONLY · HOT</div>
+        )
+      }
+    </div>
 
     <div>
       <label for={`customer-name-${bean.id}`} class="mb-1 block text-sm font-bold text-roast">이름</label>
@@ -56,9 +90,32 @@ const actionPath = `/thanks?bean=${bean.id}`;
     toast.dataset.visible = "true";
   };
 
+  const bindTemperatureSelection = (form) => {
+    const tempInput = form.querySelector("[data-serve-temp-input]");
+    const tempButtons = form.querySelectorAll("[data-temp-option]");
+    if (!tempInput || tempButtons.length === 0) return;
+
+    tempButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const nextValue = button.dataset.tempValue;
+        if (!nextValue) return;
+
+        tempInput.value = nextValue;
+
+        tempButtons.forEach((otherButton) => {
+          const isSelected = otherButton === button;
+          otherButton.classList.toggle("is-selected", isSelected);
+          otherButton.setAttribute("aria-pressed", String(isSelected));
+        });
+      });
+    });
+  };
+
   document.querySelectorAll("form[data-order-form]").forEach((form) => {
     if (form.dataset.enhanced === "true") return;
     form.dataset.enhanced = "true";
+
+    bindTemperatureSelection(form);
 
     const toast = form.closest("section")?.nextElementSibling;
     const submitButton = form.querySelector("[data-submit-button]");

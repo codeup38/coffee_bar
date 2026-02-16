@@ -75,6 +75,7 @@ npm run preview
 - `bean_name` (hidden)
 - `page_path` (hidden)
 - `created_at_client` (hidden)
+- `serve_temp` (hidden, `hot` 또는 `ice`)
 - `form-name=orders` (hidden)
 
 ## 명절 당일 운영
