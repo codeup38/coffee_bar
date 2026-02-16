@@ -5,7 +5,7 @@ const actionPath = `/thanks?bean=${bean.id}`;
 
 <section id="order-section" class="sticker-card mt-8">
   <h3 class="text-2xl font-bold text-roast">주문하기</h3>
-  <p class="mt-2 text-sm text-ink/85">이름만 남기면 접수 끝. 기다리면서 원두 이야기도 읽어보세요.</p>
+  <p class="mt-2 text-sm text-ink/85">이름만 남기면 접수 끝.<br/>기다리면서 원두 이야기도 읽어보세요.</p>
 
   <form
     name="orders"
@@ -94,6 +94,11 @@ const actionPath = `/thanks?bean=${bean.id}`;
         }
 
         showToast(toast);
+
+        const beanIdInput = form.querySelector('input[name="bean_id"]');
+        if (beanIdInput) {
+          try { localStorage.setItem('coffee_bar_ordered_bean', beanIdInput.value); } catch {}
+        }
 
         window.setTimeout(() => {
           const redirectTo = form.getAttribute("action") || "/thanks";

@@ -1,0 +1,113 @@
+---
+const { bean } = Astro.props;
+
+const profileItems = [
+  { label: "산미", value: bean.profile.acidity },
+  { label: "단맛", value: bean.profile.sweetness },
+  { label: "바디", value: bean.profile.body }
+];
+---
+
+<div class="mt-8">
+  <div
+    data-bean-share-card
+    class="rounded-2xl border border-roast/20 bg-white p-5 shadow-sticker"
+  >
+    <p class="sticker-chip inline-flex">{bean.badge}</p>
+    <h3 class="mt-3 text-xl font-bold text-roast">{bean.name}</h3>
+    <p class="mt-1 text-sm text-ink/90">{bean.one_liner}</p>
+
+    <dl class="mt-4 space-y-2">
+      {profileItems.map((item) => (
+        <div class="grid grid-cols-[40px_1fr_38px] items-center gap-2 text-xs">
+          <dt class="font-bold text-roast">{item.label}</dt>
+          <dd class="taste-meter">
+            {Array.from({ length: 5 }).map((_, index) => (
+              <span class={index < item.value ? "is-active" : ""} />
+            ))}
+          </dd>
+          <dd class="text-right text-ink/70">{item.value}/5</dd>
+        </div>
+      ))}
+    </dl>
+
+    <p class="mt-4 text-[10px] font-bold tracking-wide text-roast/40">설날 팝업 커피바</p>
+  </div>
+
+  <div class="mt-3 grid grid-cols-2 gap-2">
+    <button
+      type="button"
+      class="rounded-xl border border-roast/30 bg-paper px-4 py-2.5 text-sm font-bold text-roast"
+      data-share-bean
+      data-bean-name={bean.name}
+      data-bean-liner={bean.one_liner}
+    >
+      공유하기
+    </button>
+    <button
+      type="button"
+      class="rounded-xl bg-roast px-4 py-2.5 text-sm font-bold text-paper"
+      data-save-bean-image
+    >
+      이미지 저장
+    </button>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll("[data-share-bean]").forEach((btn) => {
+    if (!navigator.share) {
+      (btn as HTMLElement).hidden = true;
+      const saveBtn = btn.nextElementSibling;
+      if (saveBtn) {
+        (saveBtn as HTMLElement).classList.remove("rounded-xl");
+        (saveBtn as HTMLElement).classList.add("rounded-xl", "col-span-2");
+      }
+      return;
+    }
+
+    btn.addEventListener("click", async () => {
+      const el = btn as HTMLElement;
+      try {
+        await navigator.share({
+          title: el.dataset.beanName || "coffee bar",
+          text: el.dataset.beanLiner || "",
+          url: window.location.href
+        });
+      } catch {
+        // user cancelled
+      }
+    });
+  });
+
+  document.querySelectorAll("[data-save-bean-image]").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const card = (btn as HTMLElement).closest(".mt-8")?.querySelector("[data-bean-share-card]") as HTMLElement | null;
+      if (!card) return;
+
+      const el = btn as HTMLButtonElement;
+      const originalText = el.textContent;
+      el.textContent = "생성 중...";
+      el.disabled = true;
+
+      try {
+        const { default: html2canvas } = await import("html2canvas");
+        const canvas = await html2canvas(card, {
+          backgroundColor: "#ffffff",
+          useCORS: true,
+          scale: 2
+        });
+
+        const link = document.createElement("a");
+        link.download = "coffee-bar-bean.png";
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+      } catch {
+        alert("이미지 생성에 실패했습니다.");
+      } finally {
+        el.textContent = originalText;
+        el.disabled = false;
+      }
+    });
+  });
+</script>

@@ -60,7 +60,10 @@ const beanIds = beans.map((bean) => bean.id);
   <script is:inline>
     const validBeanIds = new Set({JSON.stringify(beanIds)});
     const params = new URLSearchParams(window.location.search);
-    const beanId = params.get("bean");
+    let beanId = params.get("bean");
+    if (!beanId) {
+      try { beanId = localStorage.getItem("coffee_bar_ordered_bean"); } catch {}
+    }
 
     if (beanId && validBeanIds.has(beanId)) {
       const orderedBeanLink = document.getElementById("ordered-bean-link");

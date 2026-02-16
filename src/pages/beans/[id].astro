@@ -1,5 +1,6 @@
 ---
 import Accordion from "../../components/Accordion.astro";
+import BeanShareCard from "../../components/BeanShareCard.astro";
 import Layout from "../../components/Layout.astro";
 import OrderForm from "../../components/OrderForm.astro";
 import beans from "../../data/beans.json";
@@ -21,76 +22,107 @@ const profileItems = [
 ---
 
 <Layout title={`${bean.name} · coffee bar`} description={bean.one_liner}>
-  <!-- Phase A — 빠른 결정 -->
-  <section class="sticker-card">
-    <p class="sticker-chip inline-flex">{bean.badge}</p>
-    <h1 class="mt-3 text-3xl font-bold text-roast sm:text-4xl">{bean.name}</h1>
-    <p class="mt-2 text-base text-ink/90">{bean.one_liner}</p>
-    <p class="mt-3 text-sm text-ink/90">{bean.intro[0]}</p>
+  <div data-bean-page data-bean-id={bean.id}>
 
-    <dl class="mt-4 space-y-2">
-      {
-        profileItems.map((item) => (
-          <div class="grid grid-cols-[45px_1fr_40px] items-center gap-2 text-sm">
-            <dt class="font-bold text-roast">{item.label}</dt>
-            <dd class="taste-meter">
-              {Array.from({ length: 5 }).map((_, index) => <span class={index < item.value ? "is-active" : ""} />)}
-            </dd>
-            <dd class="text-right text-xs text-ink/70">{item.value}/5</dd>
-          </div>
-        ))
-      }
-    </dl>
+    <!-- Header card — always visible -->
+    <section class="sticker-card">
+      <p class="sticker-chip inline-flex">{bean.badge}</p>
+      <h1 class="mt-3 text-3xl font-bold text-roast sm:text-4xl">{bean.name}</h1>
+      <p class="mt-2 text-base text-ink/90">{bean.one_liner}</p>
+      <p class="mt-3 text-sm text-ink/90">{bean.intro[0]}</p>
 
-    <a
-      href="#order-section"
-      class="touch-target mt-5 inline-flex items-center justify-center rounded-xl bg-roast px-5 py-2.5 text-sm font-bold text-paper"
-    >
-      이 원두로 주문하기
-    </a>
-  </section>
+      <dl class="mt-4 space-y-2">
+        {
+          profileItems.map((item) => (
+            <div class="grid grid-cols-[45px_1fr_40px] items-center gap-2 text-sm">
+              <dt class="font-bold text-roast">{item.label}</dt>
+              <dd class="taste-meter">
+                {Array.from({ length: 5 }).map((_, index) => <span class={index < item.value ? "is-active" : ""} />)}
+              </dd>
+              <dd class="text-right text-xs text-ink/70">{item.value}/5</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </section>
 
-  <OrderForm bean={bean} pagePath={`/beans/${bean.id}`} />
+    <!-- PRE-ORDER: order form + collapsed story -->
+    <div class="bean-pre-order">
+      <OrderForm bean={bean} pagePath={`/beans/${bean.id}`} />
 
-  <!-- 구분선 — 마시면서 읽기 -->
-  <div class="mt-8 flex items-center gap-3">
-    <div class="h-px flex-1 bg-roast/15"></div>
-    <p class="text-xs font-bold tracking-wide text-roast/60">마시면서 읽기</p>
-    <div class="h-px flex-1 bg-roast/15"></div>
-  </div>
-
-  <!-- Phase B — 마시면서 읽기 -->
-  <section class="sticker-card mt-6" id="bean-reading">
-    {bean.intro.length > 1 && (
-      <div>
-        <h2 class="text-2xl font-bold text-roast">이 원두의 이야기</h2>
-        <div class="mt-3 space-y-3 text-sm text-ink/90">
-          {bean.intro.slice(1).map((paragraph) => <p>{paragraph}</p>)}
+      {bean.intro.length > 1 && (
+        <div class="mt-6">
+          <Accordion title="이 원두의 이야기">
+            <div class="space-y-3 text-sm text-ink/90">
+              {bean.intro.slice(1).map((paragraph) => <p>{paragraph}</p>)}
+            </div>
+          </Accordion>
         </div>
+      )}
+
+      <div class="mt-6 text-center">
+        <a href="/beans" class="text-sm font-bold text-roast underline decoration-roast/40 underline-offset-4">다른 원두 보기</a>
       </div>
-    )}
-
-    <div class="mt-6 border-t border-roast/10 pt-5">
-      <h2 class="text-2xl font-bold text-roast">마실 때 포인트</h2>
-      <p class="mt-2 text-sm text-ink/90">{bean.drink_tip}</p>
     </div>
 
-    <div class="mt-6 border-t border-roast/10 pt-5">
-      <Accordion title="더 알아보기" summary="원두 배경">
-        <div class="space-y-3">
-          {bean.background.map((paragraph) => <p>{paragraph}</p>)}
+    <!-- POST-ORDER: reading content + share card -->
+    <div class="bean-post-order">
+      <section class="sticker-card mt-6 text-center">
+        <p class="sticker-chip inline-flex">ORDER RECEIVED</p>
+        <p class="mt-3 text-sm text-ink/85">
+          주문이 접수되었습니다.<br/>
+          기다리면서 원두 이야기를 읽어보세요.
+        </p>
+      </section>
+
+      <section class="sticker-card mt-6" id="bean-reading">
+        {bean.intro.length > 1 && (
+          <div>
+            <h2 class="text-2xl font-bold text-roast">이 원두의 이야기</h2>
+            <div class="mt-3 space-y-3 text-sm text-ink/90">
+              {bean.intro.slice(1).map((paragraph) => <p>{paragraph}</p>)}
+            </div>
+          </div>
+        )}
+
+        <div class="mt-6 border-t border-roast/10 pt-5">
+          <h2 class="text-2xl font-bold text-roast">마실 때 포인트</h2>
+          <p class="mt-2 text-sm text-ink/90">{bean.drink_tip}</p>
         </div>
-      </Accordion>
-    </div>
-  </section>
 
-  <div class="mt-6 text-center">
-    <a href="/beans" class="text-sm font-bold text-roast underline decoration-roast/40 underline-offset-4">다른 원두 보기</a>
+        <div class="mt-6 border-t border-roast/10 pt-5">
+          <Accordion title="더 알아보기" summary="원두 배경">
+            <div class="space-y-3">
+              {bean.background.map((paragraph) => <p>{paragraph}</p>)}
+            </div>
+          </Accordion>
+        </div>
+      </section>
+
+      <BeanShareCard bean={bean} />
+
+      <div class="mt-6 text-center">
+        <a href="/beans" class="text-sm font-bold text-roast underline decoration-roast/40 underline-offset-4">다른 원두 보기</a>
+      </div>
+    </div>
+
   </div>
 
-  <script>
-    if (new URLSearchParams(window.location.search).has('reading')) {
-      document.getElementById('bean-reading')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+  <script is:inline>
+    (() => {
+      const page = document.querySelector("[data-bean-page]");
+      if (!page) return;
+      const beanId = page.dataset.beanId;
+      const params = new URLSearchParams(window.location.search);
+      const hasReadingParam = params.has("reading");
+      let hasOrdered = false;
+      try { hasOrdered = localStorage.getItem("coffee_bar_ordered_bean") === beanId; } catch {}
+      if (hasOrdered || hasReadingParam) {
+        page.classList.add("bean-ordered");
+        if (hasReadingParam) {
+          document.getElementById("bean-reading")?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }
+    })();
   </script>
 </Layout>

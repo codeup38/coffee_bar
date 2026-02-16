@@ -9,7 +9,10 @@ const beanIds = beans.map((bean) => bean.id);
   <section class="sticker-card text-center">
     <p class="sticker-chip inline-flex">ORDER RECEIVED</p>
     <h1 class="mt-3 text-3xl font-bold text-roast">접수됐습니다!</h1>
-    <p class="mt-3 text-sm text-ink/85">정성껏 내리다 보니 조금 시간이 걸립니다. 기다리는 동안 읽을 거리를 준비해 두었습니다.</p>
+    <p class="mt-3 text-sm text-ink/85">
+      정성껏 내리다 보니 조금 시간이 걸립니다.<br/>
+      기다리는 동안 읽을 거리를 준비해 두었습니다.
+    </p>
 
     <div class="mt-6 space-y-4 text-left">
       <!-- STEP 1 -->
@@ -51,7 +54,10 @@ const beanIds = beans.map((bean) => bean.id);
   <script is:inline>
     const validBeanIds = new Set({JSON.stringify(beanIds)});
     const params = new URLSearchParams(window.location.search);
-    const beanId = params.get("bean");
+    let beanId = params.get("bean");
+    if (!beanId) {
+      try { beanId = localStorage.getItem("coffee_bar_ordered_bean"); } catch {}
+    }
 
     if (beanId && validBeanIds.has(beanId)) {
       const storyCta = document.getElementById("story-cta");
