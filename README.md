@@ -1,50 +1,58 @@
-# Family Coffee Bar
+# ☕ coffee bar
 
-명절 기간 집 거실에서 운영하는 팝업 커피바용 모바일 웹사이트입니다.
+> 명절에 가족에게 드립 커피를 내려주면서 사용한 모바일 웹사이트
 
-- 손님은 메뉴/원두 설명을 읽고 이름만 입력해 주문합니다.
-- 주문은 `Netlify Forms (orders)`에 저장됩니다.
-- 운영자는 Netlify Dashboard에서 주문을 확인하고 완료된 제출을 삭제합니다.
+**[Live Demo →](https://drip-coffee.netlify.app)**
 
-## 핵심 기능
+## 만든 이유
 
-- 정적 사이트 (Astro + Tailwind CSS)
-- 원두 목록/상세/스토리 페이지
-- 원두 상세 페이지에서 바로 주문
-- JS 가능 시 AJAX 제출 + 토스트 `주문 접수됨 ✅`
-- JS 실패/비활성 시 `/thanks` 폴백
-- `/share` 페이지에서 QR 생성 + URL 복사/공유
-- 큰 글씨 모드 토글 (`localStorage` 유지)
+가족 모임에서 드립 커피를 내려주는데, 원두 설명을 일일이 하기 어려워서
+모바일 웹으로 원두 소개 · 주문 · 읽을거리를 한곳에 모았습니다.
+JSON 파일(원두/사이트 텍스트)만 바꾸면 다른 팝업에도 재사용할 수 있습니다.
 
-## 페이지 구성
+## 기능
 
-- `/` 홈
-- `/beans` 원두 목록
-- `/beans/[id]` 원두 상세 + 주문 폼
-- `/story` 스토리
-- `/thanks` 제출 폴백 페이지
-- `/share` QR 공유 페이지
+- 원두별 상세 페이지 — 맛 프로필, 이야기, 배경
+- 이름만 입력하는 간단 주문 → Netlify Forms
+- 주문 후 읽을거리 흐름 (story → bean reading)
+- QR 코드 공유 페이지
+- 모바일 퍼스트 반응형
 
-## 데이터 파일
+## 기술 스택
 
-- `src/data/beans.json`: 원두 데이터
-- `src/data/site.json`: 사이트 텍스트/QR 설정
+Astro · Tailwind CSS · Netlify Forms
+JS 프레임워크 없는 정적 사이트 — 빌드 결과물은 순수 HTML/CSS/JS
 
-## 로컬 실행
+## 시작하기
 
 ```bash
 npm install
-npm run dev
+npm run dev       # 개발 서버
+npm run build     # 프로덕션 빌드
 ```
 
-빌드 확인:
+## 커스터마이징
 
-```bash
-npm run build
-npm run preview
-```
+| 파일 | 내용 |
+|------|------|
+| `src/data/beans.json` | 원두 목록·프로필·텍스트 |
+| `src/data/site.json` | 사이트 제목·스토리·QR 설정 |
 
-## 배포/브랜치 운영
+## 페이지 구성
+
+| 경로 | 설명 |
+|------|------|
+| `/` | 홈 |
+| `/beans` | 원두 목록 |
+| `/beans/[id]` | 원두 상세 + 주문 |
+| `/story` | 커피 이야기 |
+| `/thanks` | 주문 완료 |
+| `/share` | QR 공유 |
+
+<details>
+<summary>운영 가이드 (Netlify Forms · 당일 운영)</summary>
+
+### 배포/브랜치 운영
 
 기본 운영 흐름:
 
@@ -61,7 +69,7 @@ npm run preview
 - Build command: `npm run build`
 - Publish directory: `dist`
 
-## Netlify Forms 설정 (중요)
+### Netlify Forms 설정 (중요)
 
 1. Netlify Site settings에서 Form detection ON
 2. 배포 1회 재실행(redeploy)
@@ -78,13 +86,19 @@ npm run preview
 - `serve_temp` (hidden, `hot` 또는 `ice`)
 - `form-name=orders` (hidden)
 
-## 명절 당일 운영
+### 명절 당일 운영
 
 1. Netlify Dashboard > Forms > `orders`를 열어둡니다.
 2. 주문 확인 후 커피를 준비합니다.
 3. 전달 완료한 주문은 Delete로 제거합니다.
 
-## QR 공유 운영
+### QR 공유 운영
 
 - `/share` 페이지를 열고 가족이 QR을 스캔하도록 안내합니다.
 - 필요 시 URL 복사 버튼으로 메신저에 공유합니다.
+
+</details>
+
+## License
+
+MIT
