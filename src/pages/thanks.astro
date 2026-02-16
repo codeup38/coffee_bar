@@ -33,7 +33,7 @@ const beanIds = beans.map((bean) => bean.id);
       <div class="rounded-xl border border-roast/15 bg-paper p-4">
         <p class="text-xs font-bold tracking-wide text-roast/60">STEP 2</p>
         <p class="mt-1 font-bold text-roast">커피 받으면, 원두 해설 읽기</p>
-        <p class="mt-1 text-xs text-ink/70">내가 주문한 원두의 맛 포인트와 배경을 알아봅니다.</p>
+        <p class="mt-1 text-xs text-ink/70">권장 순서: STEP 1을 먼저 읽고 STEP 2로 이동해 보세요.</p>
         <a
           id="ordered-bean-cta"
           href="/beans"
@@ -51,8 +51,8 @@ const beanIds = beans.map((bean) => bean.id);
     </div>
   </section>
 
-  <script is:inline>
-    const validBeanIds = new Set({JSON.stringify(beanIds)});
+  <script is:inline define:vars={{ beanIds }}>
+    const validBeanIds = new Set(beanIds);
     const params = new URLSearchParams(window.location.search);
     const beanId = params.get("bean");
 
@@ -61,7 +61,7 @@ const beanIds = beans.map((bean) => bean.id);
       const orderedBeanCta = document.getElementById("ordered-bean-cta");
 
       if (storyCta) {
-        storyCta.setAttribute("href", `/story?bean=${beanId}`);
+        storyCta.setAttribute("href", `/story?bean=${beanId}&step=1`);
       }
 
       if (orderedBeanCta) {

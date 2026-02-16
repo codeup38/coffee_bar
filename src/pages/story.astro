@@ -46,8 +46,8 @@ const beanIds = beans.map((bean) => bean.id);
     </div>
   </section>
 
-  <script is:inline>
-    const validBeanIds = new Set({JSON.stringify(beanIds)});
+  <script is:inline define:vars={{ beanIds }}>
+    const validBeanIds = new Set(beanIds);
     const params = new URLSearchParams(window.location.search);
     const beanId = params.get("bean");
 
@@ -55,7 +55,7 @@ const beanIds = beans.map((bean) => bean.id);
       const orderedBeanLink = document.getElementById("ordered-bean-link");
       if (orderedBeanLink) {
         orderedBeanLink.setAttribute("href", `/beans/${beanId}?reading=1`);
-        orderedBeanLink.textContent = "주문한 원두 알아보기";
+        orderedBeanLink.textContent = "STEP 2: 주문한 원두 알아보기";
       }
     }
   </script>
