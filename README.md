@@ -1,6 +1,6 @@
 # ☕ coffee bar
 
-> 명절에 가족에게 드립 커피를 내려주면서 쓸 모바일 웹사이트
+> 명절에 가족에게 드립 커피를 내려주면서 사용한 모바일 웹사이트
 
 **[Live Demo →](https://drip-coffee.netlify.app)**
 
