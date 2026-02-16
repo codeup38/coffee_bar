@@ -1,0 +1,169 @@
+---
+const { bean, pagePath } = Astro.props;
+const actionPath = `/thanks?bean=${bean.id}`;
+const tempMode = bean.temp_mode ?? "hot_only";
+const canChooseTemp = tempMode === "hot_ice";
+---
+
+<section id="order-section" class="sticker-card mt-8">
+  <h3 class="text-2xl font-bold text-roast">주문하기</h3>
+  <p class="mt-2 text-sm text-ink/85">이름만 남기면 접수 끝.<br/>기다리면서 원두 이야기도 읽어보세요.</p>
+
+  <form
+    name="orders"
+    method="POST"
+    action={actionPath}
+    data-netlify="true"
+    data-order-form
+    data-temp-mode={tempMode}
+    class="mt-4 space-y-4"
+  >
+    <input type="hidden" name="form-name" value="orders" />
+    <input type="hidden" name="bean_id" value={bean.id} />
+    <input type="hidden" name="bean_name" value={bean.name} />
+    <input type="hidden" name="page_path" value={pagePath} />
+    <input type="hidden" name="created_at_client" value="" />
+    <input type="hidden" name="serve_temp" value="hot" data-serve-temp-input />
+
+    <div>
+      <p class="mb-2 block text-sm font-bold text-roast">온도</p>
+      {
+        canChooseTemp ? (
+          <div class="grid grid-cols-2 gap-2" role="group" aria-label="온도 선택">
+            <button
+              type="button"
+              class="touch-target temp-button is-selected"
+              data-temp-option
+              data-temp-value="hot"
+              aria-pressed="true"
+            >
+              HOT
+            </button>
+            <button
+              type="button"
+              class="touch-target temp-button"
+              data-temp-option
+              data-temp-value="ice"
+              aria-pressed="false"
+            >
+              ICE
+            </button>
+          </div>
+        ) : (
+          <div class="touch-target temp-button is-locked" aria-label="HOT ONLY">HOT ONLY · HOT</div>
+        )
+      }
+    </div>
+
+    <div>
+      <label for={`customer-name-${bean.id}`} class="mb-1 block text-sm font-bold text-roast">이름</label>
+      <input
+        id={`customer-name-${bean.id}`}
+        class="touch-target w-full rounded-xl border border-roast/20 bg-white px-4 py-2.5"
+        type="text"
+        name="customer_name"
+        maxlength="24"
+        required
+        placeholder="호칭이나 이름"
+      />
+    </div>
+
+    <button
+      type="submit"
+      class="touch-target w-full rounded-xl bg-roast px-4 py-3 text-base font-bold text-paper"
+      data-submit-button
+    >
+      이 원두로 한 잔
+    </button>
+  </form>
+</section>
+
+<div class="toast" role="status" aria-live="polite" data-order-toast>
+  접수 완료! 조금만 기다려 주세요 ☕
+</div>
+
+<script>
+  const encode = (formData) => new URLSearchParams(formData).toString();
+
+  const showToast = (toast) => {
+    if (!toast) return;
+    toast.dataset.visible = "true";
+  };
+
+  const bindTemperatureSelection = (form) => {
+    const tempInput = form.querySelector("[data-serve-temp-input]");
+    const tempButtons = form.querySelectorAll("[data-temp-option]");
+    if (!tempInput || tempButtons.length === 0) return;
+
+    tempButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const nextValue = button.dataset.tempValue;
+        if (!nextValue) return;
+
+        tempInput.value = nextValue;
+
+        tempButtons.forEach((otherButton) => {
+          const isSelected = otherButton === button;
+          otherButton.classList.toggle("is-selected", isSelected);
+          otherButton.setAttribute("aria-pressed", String(isSelected));
+        });
+      });
+    });
+  };
+
+  document.querySelectorAll("form[data-order-form]").forEach((form) => {
+    if (form.dataset.enhanced === "true") return;
+    form.dataset.enhanced = "true";
+
+    bindTemperatureSelection(form);
+
+    const toast = form.closest("section")?.nextElementSibling;
+    const submitButton = form.querySelector("[data-submit-button]");
+
+    form.addEventListener("submit", async (event) => {
+      if (!window.fetch || !window.URLSearchParams || !window.FormData) {
+        return;
+      }
+
+      event.preventDefault();
+
+      const createdAtInput = form.querySelector('input[name="created_at_client"]');
+      if (createdAtInput) {
+        createdAtInput.value = new Date().toISOString();
+      }
+
+      if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.textContent = "접수 중...";
+      }
+
+      try {
+        const response = await fetch("/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: encode(new FormData(form))
+        });
+
+        if (!response.ok) {
+          throw new Error("request_failed");
+        }
+
+        showToast(toast);
+
+        window.setTimeout(() => {
+          const redirectTo = form.getAttribute("action") || "/thanks";
+          window.location.assign(redirectTo);
+        }, 600);
+      } catch {
+        form.submit();
+      } finally {
+        if (submitButton) {
+          submitButton.disabled = false;
+          submitButton.textContent = "이 원두로 한 잔";
+        }
+      }
+    });
+  });
+</script>

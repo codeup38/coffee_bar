@@ -1,0 +1,123 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-scale: 1;
+}
+
+html {
+  font-size: calc(16px * var(--font-scale));
+  scroll-behavior: smooth;
+}
+
+html.large-text {
+  --font-scale: 1.13;
+}
+
+body {
+  background-color: #f8f2e7;
+  background-image:
+    radial-gradient(circle at 15% -5%, rgba(210, 173, 122, 0.2), transparent 40%),
+    radial-gradient(circle at 90% 15%, rgba(100, 114, 85, 0.16), transparent 35%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0));
+  background-attachment: fixed;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: "Noto Serif KR", Georgia, serif;
+  letter-spacing: -0.015em;
+}
+
+p,
+li,
+label,
+input,
+button,
+summary {
+  line-height: 1.72;
+}
+
+html.large-text p,
+html.large-text li,
+html.large-text label,
+html.large-text input,
+html.large-text button,
+html.large-text summary {
+  line-height: 1.88;
+}
+
+button,
+a.touch-target,
+input.touch-target,
+summary.touch-target {
+  min-height: 44px;
+}
+
+.sticker-card {
+  @apply rounded-2xl border border-roast/20 bg-white/85 p-5 shadow-sticker backdrop-blur;
+}
+
+.sticker-chip {
+  @apply rounded-full border border-roast/25 bg-paper px-3 py-1 text-xs font-semibold tracking-wide text-roast;
+}
+
+.taste-meter {
+  @apply flex items-center gap-1;
+}
+
+.taste-meter span {
+  @apply h-2.5 flex-1 rounded-full bg-roast/10;
+}
+
+.taste-meter span.is-active {
+  @apply bg-crema;
+}
+
+.accordion {
+  @apply rounded-xl border border-roast/15 bg-white/70;
+}
+
+.accordion summary {
+  @apply cursor-pointer list-none px-4 py-3 text-left font-bold text-roast;
+}
+
+.accordion summary::-webkit-details-marker {
+  display: none;
+}
+
+.accordion-content {
+  @apply border-t border-roast/10 px-4 py-3 text-sm text-ink/90;
+}
+
+.toast {
+  @apply pointer-events-none fixed bottom-6 left-1/2 z-50 whitespace-nowrap rounded-full bg-ink px-4 py-2 text-sm font-bold text-paper shadow-xl;
+  opacity: 0;
+  transform: translate(-50%, 16px);
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.toast[data-visible="true"] {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.temp-button {
+  @apply rounded-xl border border-roast/25 bg-white px-3 py-2 text-sm font-bold text-roast;
+}
+
+.temp-button.is-selected {
+  @apply border-roast bg-roast text-paper;
+}
+
+.temp-button.is-locked {
+  @apply border-roast/30 bg-paper text-roast/75;
+}
+
+/* Bean detail page: pre/post-order toggle */
+.bean-post-order { display: none; }
+.bean-ordered .bean-pre-order { display: none; }
+.bean-ordered .bean-post-order { display: block; }

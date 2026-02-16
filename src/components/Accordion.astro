@@ -1,0 +1,11 @@
+---
+const { title, summary = "", open = false } = Astro.props;
+---
+
+<details class="accordion" open={open}>
+  <summary class="touch-target">{title}</summary>
+  <div class="accordion-content">
+    {summary && <p class="mb-2 text-xs font-semibold text-roast/75">{summary}</p>}
+    <slot />
+  </div>
+</details>
