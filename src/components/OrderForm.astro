@@ -95,11 +95,6 @@ const actionPath = `/thanks?bean=${bean.id}`;
 
         showToast(toast);
 
-        const beanIdInput = form.querySelector('input[name="bean_id"]');
-        if (beanIdInput) {
-          try { localStorage.setItem('coffee_bar_ordered_bean', beanIdInput.value); } catch {}
-        }
-
         window.setTimeout(() => {
           const redirectTo = form.getAttribute("action") || "/thanks";
           window.location.assign(redirectTo);

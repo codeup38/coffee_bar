@@ -105,16 +105,11 @@ const profileItems = [
     (() => {
       const page = document.querySelector("[data-bean-page]");
       if (!page) return;
-      const beanId = page.dataset.beanId;
       const params = new URLSearchParams(window.location.search);
       const hasReadingParam = params.has("reading");
-      let hasOrdered = false;
-      try { hasOrdered = localStorage.getItem("coffee_bar_ordered_bean") === beanId; } catch {}
-      if (hasOrdered || hasReadingParam) {
+      if (hasReadingParam) {
         page.classList.add("bean-ordered");
-        if (hasReadingParam) {
-          document.getElementById("bean-reading")?.scrollIntoView({ behavior: "smooth", block: "start" });
-        }
+        document.getElementById("bean-reading")?.scrollIntoView({ behavior: "smooth", block: "start" });
       }
     })();
   </script>

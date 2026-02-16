@@ -54,10 +54,7 @@ const beanIds = beans.map((bean) => bean.id);
   <script is:inline>
     const validBeanIds = new Set({JSON.stringify(beanIds)});
     const params = new URLSearchParams(window.location.search);
-    let beanId = params.get("bean");
-    if (!beanId) {
-      try { beanId = localStorage.getItem("coffee_bar_ordered_bean"); } catch {}
-    }
+    const beanId = params.get("bean");
 
     if (beanId && validBeanIds.has(beanId)) {
       const storyCta = document.getElementById("story-cta");
